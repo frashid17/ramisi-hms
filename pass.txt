@@ -9,3 +9,6 @@ i. email:admin@mail.com && password: admin
 doctor
 1. email: ali@gmail.com  && password: ali
 2. email: fahim@gmail.com && password: fahim
+
+receptionist
+1. email: iptisam@gmail.com && password: iptisam
