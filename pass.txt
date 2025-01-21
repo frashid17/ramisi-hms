@@ -1,0 +1,11 @@
+Patients
+1. email: john@gmail.com && password: john
+
+
+Admin
+i. email:admin@mail.com && password: admin
+
+
+doctor
+1. email: ali@gmail.com  && password: ali
+2. email: fahim@gmail.com && password: fahim
