@@ -1,4 +1,5 @@
 <?php
+// File: nurse/login.php
 session_start();
 require_once '../config/database.php';
 
@@ -7,16 +8,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
 
     try {
-        // Check if the user exists in the database with the role 'doctor'
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = 'doctor'");
+        // Check if the user exists in the database with the role 'nurse'
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = 'nurse'");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            // Store user data in session
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = 'doctor';
-            // Redirect to doctor dashboard
+            $_SESSION['role'] = 'nurse';
+
+            // Redirect to nurse dashboard
             header('Location: dashboard.php');
             exit();
         } else {
@@ -33,12 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Login - Ramisi HMS</title>
+    <title>Nurse Login - Ramisi HMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: url('https://static.vecteezy.com/system/resources/previews/040/835/804/non_2x/ai-generated-interior-of-a-hospital-corridor-with-green-walls-and-blue-floor-photo.jpg');
+            background-image: url('https://static.vecteezy.com/system/resources/previews/040/835/804/non_2x/ai-generated-interior-of-a-hospital-corridor-with-green-walls-and-blue-floor-photo.jpg'); 
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -70,15 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .login-header i {
             font-size: 2rem;
             margin-right: 10px;
-            color: #007bff;
+            color: #0d6efd;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
-            <i class="fas fa-user-md"></i>
-            <h2>Doctor Login</h2>
+            <i class="fas fa-user-nurse"></i>
+            <h2>Nurse Login</h2>
         </div>
         <?php if (isset($error)): ?>
             <div class="alert alert-danger text-center"> <?= htmlspecialchars($error) ?> </div>
@@ -108,7 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
-        <a href="../index.php" class="btn btn-home w-100 text-center mt-3">Back to Main Page</a>
+        <a href="../index.php" class="btn btn-home w-100 text-center mt-3">
+            Back to Main Page
+        </a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

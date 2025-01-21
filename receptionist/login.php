@@ -1,4 +1,5 @@
 <?php
+// File: receptionist/login.php
 session_start();
 require_once '../config/database.php';
 
@@ -7,19 +8,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
 
     try {
-        // Check if the user exists in the database with the role 'doctor'
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = 'doctor'");
+        // Check if the user exists in the database with the role 'receptionist'
+        $stmt = $pdo->prepare("
+            SELECT *
+            FROM users
+            WHERE email = ? AND role = 'receptionist'
+        ");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            // Store user data in session
+            // Login successful
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = 'doctor';
-            // Redirect to doctor dashboard
-            header('Location: dashboard.php');
+            $_SESSION['role'] = 'receptionist';
+            header('Location: dashboard.php'); // Redirect to receptionist dashboard
             exit();
         } else {
+            // Invalid credentials
             $error = "Invalid email or password!";
         }
     } catch (PDOException $e) {
@@ -33,18 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Login - Ramisi HMS</title>
+    <title>Receptionist Login - Ramisi HMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: url('https://static.vecteezy.com/system/resources/previews/040/835/804/non_2x/ai-generated-interior-of-a-hospital-corridor-with-green-walls-and-blue-floor-photo.jpg');
+            background-image: url('https://static.vecteezy.com/system/resources/previews/040/835/804/non_2x/ai-generated-interior-of-a-hospital-corridor-with-green-walls-and-blue-floor-photo.jpg'); 
             background-size: cover;
             background-position: center;
             height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             font-family: 'Arial', sans-serif;
         }
         .login-container {
@@ -55,33 +60,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 400px;
             width: 100%;
         }
+        .login-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .login-header i {
+            font-size: 2rem;
+            margin-right: 10px;
+            color: #0d6efd;
+        }
         .btn-home {
             margin-top: 15px;
             background-color: #6c757d;
             color: white;
             text-decoration: none;
         }
-        .login-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .login-header i {
-            font-size: 2rem;
-            margin-right: 10px;
-            color: #007bff;
-        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
-            <i class="fas fa-user-md"></i>
-            <h2>Doctor Login</h2>
+            <i class="fas fa-concierge-bell"></i>
+            <h2>Receptionist Login</h2>
         </div>
         <?php if (isset($error)): ?>
-            <div class="alert alert-danger text-center"> <?= htmlspecialchars($error) ?> </div>
+            <div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         <form method="POST" action="">
             <div class="mb-3">
