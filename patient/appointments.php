@@ -21,18 +21,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $availabilityStmt->execute([$doctorId]);
     $availability = $availabilityStmt->fetchColumn();
 
-    if (!$availability || !isDoctorAvailable($availability, $appointmentDate, $appointmentTime)) {
-        $error = "The selected doctor is not available at this time.";
-    } else {
+    // Check if the doctor is available
+    if ($availability === 'Available') {
         try {
+            // Book the appointment
             $stmt = $pdo->prepare("INSERT INTO appointments (patient_id, doctor_id, date, time, status) VALUES (?, ?, ?, ?, 'scheduled')");
             $stmt->execute([$_SESSION['user_id'], $doctorId, $appointmentDate, $appointmentTime]);
             $success = "Appointment booked successfully!";
         } catch (PDOException $e) {
             $error = "An error occurred: " . $e->getMessage();
         }
+    } else {
+        // Doctor is not available
+        $error = "The selected doctor is not available at this time.";
     }
 }
+
 
 // Fetch doctors
 try {
