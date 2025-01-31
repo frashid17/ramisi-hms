@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-family: 'Arial', sans-serif;
         }
         .login-container {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgb(255, 255, 255);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);

@@ -160,5 +160,4 @@ Ensure you run the appropriate SQL commands to create these tables before using 
 5. **Open a Pull Request**: Submit a PR describing your changes.
 
 ---
-
 **Thank you** for using **Ramisi HMS**. 
