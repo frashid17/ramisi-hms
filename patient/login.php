@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .btn-home {
             margin-top: 15px;
-            background-color: #6c757d;
+            background-color:rgb(0, 0, 0);
             color: white;
         }
     </style>
