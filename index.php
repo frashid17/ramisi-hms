@@ -61,7 +61,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #007bff;
+            background:rgb(10, 75, 252);
             color: #fff;
             padding: 15px;
             border-radius: 10px;
@@ -72,7 +72,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         .user-option:hover {
-            background: #0056b3;
+            background:rgb(255, 7, 7);
             transform: scale(1.05);
         }
         .user-option i {
@@ -98,7 +98,7 @@
             color: #dcdcdc;
         }
         .btn-register {
-            background: #28a745;
+            background:rgb(0, 0, 0);
             color: #fff;
             padding: 10px 20px;
             border-radius: 10px;
