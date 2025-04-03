@@ -139,22 +139,61 @@ try {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($appointments)): ?>
-                            <?php foreach ($appointments as $appt): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($appt['appointment_id']) ?></td>
-                                    <td><?= htmlspecialchars($appt['patient_name']) ?></td>
-                                    <td><?= htmlspecialchars($appt['date']) ?></td>
-                                    <td><?= htmlspecialchars($appt['time']) ?></td>
-                                    <td><?= htmlspecialchars(ucfirst($appt['status'])) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5">No appointments found.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
+<?php if (!empty($appointments)): ?>
+    <?php foreach ($appointments as $appt): ?>
+        <tr>
+            <td><?= htmlspecialchars($appt['appointment_id']) ?></td>
+            <td><?= htmlspecialchars($appt['patient_name']) ?></td>
+            <td><?= htmlspecialchars($appt['date']) ?></td>
+            <td><?= htmlspecialchars($appt['time']) ?></td>
+            <td><?= ucfirst($appt['status']) ?></td>
+            <td>
+            <?php if ($appt['status'] === 'scheduled'): ?>
+
+                    <form method="post" action="handle_appointment_action.php" style="display:inline;">
+                        <input type="hidden" name="appointment_id" value="<?= $appt['appointment_id'] ?>">
+                        <input type="hidden" name="action" value="accept">
+                        <button class="btn btn-success btn-sm" type="submit">Accept</button>
+                    </form>
+
+                    <!-- Cancel Button triggers modal -->
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal<?= $appt['appointment_id'] ?>">Cancel</button>
+
+                    <!-- Cancel Modal -->
+                    <div class="modal fade" id="cancelModal<?= $appt['appointment_id'] ?>" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <form method="post" action="handle_appointment_action.php">
+                            <input type="hidden" name="appointment_id" value="<?= $appt['appointment_id'] ?>">
+                            <input type="hidden" name="action" value="cancel">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title">Cancel Appointment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label for="reason<?= $appt['appointment_id'] ?>" class="form-label">Reason for Cancellation</label>
+                                  <textarea class="form-control" name="cancellation_reason" id="reason<?= $appt['appointment_id'] ?>" required></textarea>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-danger">Submit Cancellation</button>
+                              </div>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                <?php else: ?>
+                    <span class="text-muted">—</span>
+                <?php endif; ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+<?php else: ?>
+    <tr><td colspan="6">No appointments found.</td></tr>
+<?php endif; ?>
+</tbody>
+
                 </table>
             </div>
         </div>
