@@ -58,6 +58,25 @@ try {
     ");
     $stmtRecords->execute([$_SESSION['user_id']]);
     $medicalRecords = $stmtRecords->fetchAll(PDO::FETCH_ASSOC);
+
+    // Appointments for this patient
+    $stmtAppointments = $pdo->prepare("
+        SELECT 
+            a.id AS appointment_id,
+            a.date,
+            a.time,
+            a.status,
+            a.cancellation_reason,
+            u.name AS doctor_name
+        FROM appointments a
+        JOIN doctors d ON a.doctor_id = d.id
+        JOIN users u ON d.user_id = u.id
+        WHERE a.patient_id = ?
+        ORDER BY a.date DESC, a.time DESC
+    ");
+    $stmtAppointments->execute([$patient['id']]);
+    $appointments = $stmtAppointments->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
     die("Error fetching data: " . $e->getMessage());
 }
@@ -161,7 +180,6 @@ try {
                                     <td><?= htmlspecialchars($payment['payment_date']) ?></td>
                                     <td>
                                         <?php if ($payment['status'] === 'pending'): ?>
-                                            <!-- Form to update payment status -->
                                             <form method="POST" class="status-form">
                                                 <input type="hidden" name="payment_update" value="1">
                                                 <input type="hidden" name="payment_id" value="<?= htmlspecialchars($payment['id']) ?>">
@@ -169,9 +187,7 @@ try {
                                                     <option value="paid">Paid</option>
                                                     <option value="canceled">Canceled</option>
                                                 </select>
-                                                <button type="submit" class="btn btn-sm btn-primary">
-                                                    Update
-                                                </button>
+                                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
                                             </form>
                                         <?php else: ?>
                                             <em>No action needed</em>
@@ -216,6 +232,57 @@ try {
                             <tr>
                                 <td colspan="4">No medical records found.</td>
                             </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="mb-4">
+            <h3 class="section-title">My Appointments</h3>
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Appointment ID</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($appointments)): ?>
+                            <?php foreach ($appointments as $appt): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($appt['appointment_id']) ?></td>
+                                    <td><?= htmlspecialchars($appt['doctor_name']) ?></td>
+                                    <td><?= htmlspecialchars($appt['date']) ?></td>
+                                    <td><?= htmlspecialchars($appt['time']) ?></td>
+                                    <td>
+                                        <?php if ($appt['status'] === 'canceled'): ?>
+                                            <span class="badge bg-danger">Canceled</span>
+                                        <?php elseif ($appt['status'] === 'scheduled'): ?>
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        <?php elseif ($appt['status'] === 'completed'): ?>
+                                            <span class="badge bg-success">Completed</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary"><?= ucfirst($appt['status']) ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($appt['status'] === 'canceled'): ?>
+                                            <em><?= htmlspecialchars($appt['cancellation_reason'] ?? 'No reason provided') ?></em>
+                                        <?php else: ?>
+                                            —
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="6">No appointments found.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
